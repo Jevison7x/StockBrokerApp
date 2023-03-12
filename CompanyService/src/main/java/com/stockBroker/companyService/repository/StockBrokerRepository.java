@@ -12,7 +12,6 @@
 package com.stockBroker.companyService.repository;
 
 import com.stockBroker.companyService.model.StockBroker;
-import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -21,5 +20,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface StockBrokerRepository extends JpaRepository<StockBroker, Long>
 {
-    Optional<StockBroker> findBycompanySymbol(String symbol);
+//    Optional<StockBroker> findBycompanySymbol(String symbol);
+
+    StockBroker findBycompanySymbol(String companySymbol);
 }

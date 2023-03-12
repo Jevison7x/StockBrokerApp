@@ -11,10 +11,16 @@
  */
 package com.stockBroker.companyService.controller;
 
+import com.stockBroker.companyService.dto.AllStockResponse;
+import com.stockBroker.companyService.dto.UpdateRequest;
 import com.stockBroker.companyService.service.StockBrokerService;
 import java.io.IOException;
+import java.util.List;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,19 +40,34 @@ public class StockBrokerController
         this.stockBrokerService = stockBrokerService;
     }
 
-    @GetMapping("/update")
-    @ResponseStatus(HttpStatus.OK)
+    @Scheduled(fixedRate = 60000)
     public String updateStock() throws IOException
     {
         stockBrokerService.updateStocks();
         return "u too gud to be in this planet";
     }
 
-    @GetMapping("/get")
-    @ResponseStatus(HttpStatus.OK)
-    public String getName() throws IOException
+//    @GetMapping("/get")
+//    @ResponseStatus(HttpStatus.OK)
+//    public String getName() throws IOException
+//    {
+//        String companyName = stockBrokerService.getCompanyName("TSLA");
+//        return companyName;
+//    }
+    @PostMapping("/update-quantity")
+    @ResponseStatus(HttpStatus.CREATED)
+    public String updateNoOfShares(@RequestBody UpdateRequest updateRequest) throws IOException
     {
-        String companyName = stockBrokerService.getCompanyName("TSLA");
-        return companyName;
+        String companySymbol = updateRequest.getCompanySymbol();
+        double noOfShares = updateRequest.getNoOfShares();
+        stockBrokerService.updateStockQuantity(companySymbol, noOfShares);
+        return "yes u did it again";
+    }
+
+    @GetMapping("/all-stocks")
+    @ResponseStatus(HttpStatus.OK)
+    public List<AllStockResponse> getAllStocks()
+    {
+        return stockBrokerService.getAllAvailableStock();
     }
 }

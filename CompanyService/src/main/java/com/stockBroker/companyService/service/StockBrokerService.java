@@ -13,12 +13,13 @@ package com.stockBroker.companyService.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.stockBroker.companyService.dto.AllStockResponse;
 import com.stockBroker.companyService.model.StockBroker;
 import com.stockBroker.companyService.repository.StockBrokerRepository;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -51,31 +52,29 @@ public class StockBrokerService
         {
         });
 
-//        List<StockBroker> stocks = new ArrayList<>();
         for(Map<String, Object> stock : stockData)
         {
             String companySymbol = (String)stock.get("symbol");
             String companyName = getCompanyName(companySymbol);
             String companyCurrency = (String)stock.get("currency");
             double companySharePrice = (double)stock.get("latestPrice");
-//            StockBroker s = new StockBroker(companySymbol, companyName, companyCurrency, companySharePrice);
-//            stocks.add(s);
-            StockBroker s = new StockBroker();
+            StockBroker s = stockRepository.findBycompanySymbol(companySymbol);
             s.setCompanyCurrency(companyCurrency);
             s.setCompanyName(companyName);
             s.setCompanySymbol(companySymbol);
             s.setCompanySharePrice(companySharePrice);
+            s.setNoOfShares(s.getNoOfShares());
             stockRepository.save(s);
         }
 
     }
 
-    public Optional<StockBroker> updateStockQuantity(String symbol, double newQuantity)
+    public StockBroker updateStockQuantity(String symbol, double newQuantity)
     {
-        Optional<StockBroker> optionalStock = stockRepository.findBycompanySymbol(symbol);
-        if(optionalStock.isPresent())
+        StockBroker optionalStock = stockRepository.findBycompanySymbol(symbol);
+        if(optionalStock != null)
         {
-            StockBroker stock = optionalStock.get();
+            StockBroker stock = optionalStock;
             stock.setNoOfShares(newQuantity);
             stockRepository.save(stock);
         }
@@ -91,5 +90,21 @@ public class StockBrokerService
         {
         });
         return (String)companyData.get("companyName");
+    }
+
+    public List<AllStockResponse> getAllAvailableStock()
+    {
+        List<StockBroker> stocks = stockRepository.findAll();
+        return stocks.stream().map(stock -> mapToStockResponse(stock)).collect(Collectors.toList());
+    }
+
+    private AllStockResponse mapToStockResponse(StockBroker stockBroker)
+    {
+        AllStockResponse asr = new AllStockResponse();
+        asr.setCompanyCurrency(stockBroker.getCompanyCurrency());
+        asr.setCompanyName(stockBroker.getCompanyName());
+        asr.setNoOfShares(stockBroker.getNoOfShares());
+        asr.setCompanySymbol(stockBroker.getCompanySymbol());
+        return asr;
     }
 }
