@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+    <listener>
+        <description>Web Application Listener</description>
+        <listener-class>com.bizblock.company.database.ContextListener</listener-class>
+    </listener>
+    <servlet>
+        <servlet-name>FetchCompaniesServlet</servlet-name>
+        <servlet-class>com.bizblock.company.FetchCompaniesServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>LoadCompaniesServlet</servlet-name>
+        <servlet-class>com.bizblock.company.LoadCompaniesServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>FetchCompaniesServlet</servlet-name>
+        <url-pattern>/fetch-companies</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>LoadCompaniesServlet</servlet-name>
+        <url-pattern>/load-companies</url-pattern>
+    </servlet-mapping>
+    <session-config>
+        <session-timeout>
+            30
+        </session-timeout>
+    </session-config>
+</web-app>
