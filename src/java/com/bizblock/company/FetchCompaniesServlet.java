@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -50,10 +51,17 @@ public class FetchCompaniesServlet extends HttpServlet
         }
         catch(Exception xcp)
         {
-            jsonResponse.put("status", "error");
-            jsonResponse.put("message", xcp.getMessage());
-            out.print(jsonResponse);
-            xcp.printStackTrace(System.err);
+            try
+            {
+                jsonResponse.put("status", "error");
+                jsonResponse.put("message", xcp.getMessage());
+                out.print(jsonResponse);
+                xcp.printStackTrace(System.err);
+            }
+            catch(JSONException jsone)
+            {
+                xcp.printStackTrace(System.err);
+            }
         }
         finally
         {
