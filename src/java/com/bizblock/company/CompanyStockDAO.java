@@ -21,7 +21,7 @@ public class CompanyStockDAO
 {
     public static void insertCompanyStock(CompanyStock companyStock) throws Exception
     {
-        try( DBConfiguration dbConfig = new DBConfiguration())
+        try(DBConfiguration dbConfig = new DBConfiguration())
         {
             EntityManager em = dbConfig.getEntityManager();
             em.getTransaction().begin();
@@ -32,7 +32,7 @@ public class CompanyStockDAO
 
     public static List<CompanyStock> getAllCompanyStocks() throws Exception
     {
-        try( DBConfiguration dbConfig = new DBConfiguration())
+        try(DBConfiguration dbConfig = new DBConfiguration())
         {
             EntityManager em = dbConfig.getEntityManager();
             String sql = "SELECT * FROM " + COMPANY_STOCKS;
@@ -44,7 +44,7 @@ public class CompanyStockDAO
 
     public static CompanyStock getCompanyStock(String symbol) throws Exception
     {
-        try( DBConfiguration dbConfig = new DBConfiguration())
+        try(DBConfiguration dbConfig = new DBConfiguration())
         {
             EntityManager em = dbConfig.getEntityManager();
             CompanyStock companyStock = em.find(CompanyStock.class, symbol);
@@ -52,14 +52,14 @@ public class CompanyStockDAO
         }
     }
 
-    public static void updateCompanyStock(CompanyStock companyStock) throws Exception
+    public static void updateCompanyStock(CompanyStock companyStock, int amountOfShares) throws Exception
     {
-        try( DBConfiguration dbConfig = new DBConfiguration())
+        try(DBConfiguration dbConfig = new DBConfiguration())
         {
             EntityManager em = dbConfig.getEntityManager();
             em.getTransaction().begin();
             CompanyStock cs = em.find(CompanyStock.class, companyStock.getSymbol());
-            cs.setNumberOfShares(companyStock.getNumberOfShares());
+            cs.setNumberOfShares(amountOfShares);
             em.getTransaction().commit();
         }
     }

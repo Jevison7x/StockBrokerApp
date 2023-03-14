@@ -12,6 +12,10 @@
         <servlet-name>LoadCompaniesServlet</servlet-name>
         <servlet-class>com.bizblock.company.LoadCompaniesServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>UpdateCompanyStockServlet</servlet-name>
+        <servlet-class>com.bizblock.company.UpdateCompanyStockServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>FetchCompaniesServlet</servlet-name>
         <url-pattern>/fetch-companies</url-pattern>
@@ -19,6 +23,10 @@
     <servlet-mapping>
         <servlet-name>LoadCompaniesServlet</servlet-name>
         <url-pattern>/load-companies</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UpdateCompanyStockServlet</servlet-name>
+        <url-pattern>/update-company-stock</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
