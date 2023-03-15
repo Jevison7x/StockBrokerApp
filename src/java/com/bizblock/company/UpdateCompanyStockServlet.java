@@ -1,5 +1,7 @@
 package com.bizblock.company;
 
+import com.bizblock.library.company.CompanyStock;
+import com.bizblock.library.company.CompanyStockDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
