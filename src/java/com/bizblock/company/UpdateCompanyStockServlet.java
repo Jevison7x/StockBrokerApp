@@ -2,6 +2,7 @@ package com.bizblock.company;
 
 import com.bizblock.library.company.CompanyStock;
 import com.bizblock.library.company.CompanyStockDAO;
+import com.bizblock.library.user.UserTokenDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -13,7 +14,7 @@ import org.json.JSONObject;
 
 /**
  *
- * @author BLAZE
+ * @author Praise
  */
 public class UpdateCompanyStockServlet extends HttpServlet
 {
@@ -26,32 +27,41 @@ public class UpdateCompanyStockServlet extends HttpServlet
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
+        JSONObject jsono = new JSONObject();
         try
         {
-            String symbol = request.getParameter("symbol");
-            int noOfShares = Integer.parseInt(request.getParameter("noOfShares"));
-            CompanyStock companyStock = CompanyStockDAO.getCompanyStock(symbol);
-            int updatedAmount = companyStock.getNumberOfShares() - noOfShares;
-            CompanyStockDAO.updateCompanyStock(companyStock, updatedAmount);
-            JSONObject jsono = new JSONObject();
-            jsono.put("status", "success");
-            jsono.put("message", "Company Stock Update Successfully");
-            out.print(jsono);
+            String username = request.getParameter("username");
+            String token = request.getParameter("token");
+            if(UserTokenDAO.tokenIsValid(username, token))
+            {
+                String symbol = request.getParameter("symbol");
+                int noOfShares = Integer.parseInt(request.getParameter("noOfShares"));
+                CompanyStock companyStock = CompanyStockDAO.getCompanyStock(symbol);
+                int updatedAmount = companyStock.getNumberOfShares() - noOfShares;
+                CompanyStockDAO.updateCompanyStock(symbol, updatedAmount);
+                jsono.put("status", "success");
+                jsono.put("message", "Company Stock Update Successfully");
+                out.print(jsono);
+            }
+            else
+            {
+                jsono.put("status", "expiredSession");
+                jsono.put("message", "Your session has expired, please login.");
+                out.print(jsono);
+            }
         }
-        catch(Exception e)
+        catch(Exception xcp)
         {
             try
             {
-                JSONObject jsono = new JSONObject();
                 jsono.put("status", "error");
-                jsono.put("message", e.getMessage());
+                jsono.put("message", xcp.getMessage());
                 out.print(jsono);
-                e.printStackTrace(System.err);
+                xcp.printStackTrace(System.err);
             }
             catch(JSONException jsone)
             {
